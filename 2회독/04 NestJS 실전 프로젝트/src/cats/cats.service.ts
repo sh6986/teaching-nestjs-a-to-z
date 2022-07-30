@@ -3,16 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrpy from 'bcrypt';
 import { Model } from 'mongoose';
 import { CatRequestDto } from 'src/dto/cats.request.dto';
+import { CatsRepository } from './cats.repository';
 import { Cat } from './cats.schema';
 
 @Injectable()
 export class CatsService {
   // 스키마를 서비스에서 사용하기 위해 DI를 해준다.
-  constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
+  constructor(private readonly catsRepository: CatsRepository) {}
 
   async signUp(body: CatRequestDto) {
     const { email, name, password } = body;
-    const isCatExist = await this.catModel.exists({ email });
+    const isCatExist = await this.catsRepository.existsByEmail(email);
 
     if (isCatExist) {
       // 403 에러 발생시켜주는 자동화된 클래스
@@ -20,7 +21,7 @@ export class CatsService {
     }
 
     const hashedPassword = await bcrpy.hash(password, 10);
-    const cat = await this.catModel.create({
+    const cat = await this.catsRepository.create({
       email,
       name,
       password: hashedPassword,
