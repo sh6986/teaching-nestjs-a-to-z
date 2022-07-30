@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
+import { CatRequestDto } from 'src/dto/cats.request.dto';
 import { CatsService } from './cats.service';
 
 @Controller('cats')
@@ -21,8 +23,8 @@ export class CatsController {
   }
 
   @Post()
-  async signUp() {
-    return 'signup';
+  async signUp(@Body() body: CatRequestDto) {
+    return await this.catsSerice.signUp(body);
   }
 
   @Post('login')

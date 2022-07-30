@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Document } from 'mongoose';
 
 const options: SchemaOptions = {
+  // createAt, updateAt을 자동으로 적용해준다.
   timestamps: true,
 };
 
@@ -32,6 +34,12 @@ export class Cat extends Document {
   @Prop()
   @IsString()
   imgUrl: string;
+
+  readonly readOnlyData: { id: string; email: string; name: string };
 }
 
 export const CatSchema = SchemaFactory.createForClass(Cat);
+
+CatSchema.virtual('readOnlyData').get(function (this: Cat) {
+  return { id: this.id, email: this.email, name: this.name };
+});
