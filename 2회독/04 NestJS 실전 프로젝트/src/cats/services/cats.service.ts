@@ -9,6 +9,12 @@ export class CatsService {
   // 스키마를 서비스에서 사용하기 위해 DI를 해준다.
   constructor(private readonly catsRepository: CatsRepository) {}
 
+  async getAllCat() {
+    const allCat = await this.catsRepository.findAll();
+    const readOnlyCats = allCat.map((cat) => cat.readOnlyData);
+    return readOnlyCats;
+  }
+
   async uploadImg(cat: Cat, files: Express.Multer.File[]) {
     const fileName = `cats/${files[0].filename}`;
     const newCat = await this.catsRepository.findByIdAndUpdateImg(
