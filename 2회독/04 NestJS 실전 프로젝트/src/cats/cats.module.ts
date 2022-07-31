@@ -6,13 +6,17 @@ import { CatsController } from './controllers/cats.controller';
 import { CatsRepository } from './cats.repository';
 import { Cat, CatSchema } from './cats.schema';
 import { CatsService } from './services/cats.service';
+import { Comments, CommentsSchema } from 'src/comments/comments.schema';
 
 @Module({
   imports: [
     MulterModule.register({
       dest: './upload', // destination의 약자. 기본적으로 upload 폴더에 저장이 된다
     }),
-    MongooseModule.forFeature([{ name: Cat.name, schema: CatSchema }]),
+    MongooseModule.forFeature([
+      { name: Comments.name, schema: CommentsSchema },
+      { name: Cat.name, schema: CatSchema },
+    ]),
     forwardRef(() => AuthModule), // 순환 참조 모듈
   ],
   controllers: [CatsController],

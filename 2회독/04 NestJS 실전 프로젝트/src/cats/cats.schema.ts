@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Document } from 'mongoose';
+import { Comments } from 'src/comments/comments.schema';
 
 const options: SchemaOptions = {
   // createAt, updateAt을 자동으로 적용해준다.
@@ -60,15 +61,28 @@ export class Cat extends Document {
     name: string;
     imgUrl: string;
   };
+
+  readonly comments: Comments[];
 }
 
-export const CatSchema = SchemaFactory.createForClass(Cat);
+export const _CatSchema = SchemaFactory.createForClass(Cat);
 
-CatSchema.virtual('readOnlyData').get(function (this: Cat) {
+_CatSchema.virtual('readOnlyData').get(function (this: Cat) {
   return {
     id: this.id,
     email: this.email,
     name: this.name,
     imgUrl: this.imgUrl,
+    comments: this.comments,
   };
 });
+
+_CatSchema.virtual('comments', {
+  ref: 'comments',
+  localField: '_id',
+  foreignField: 'info',
+});
+_CatSchema.set('toObject', { virtuals: true });
+_CatSchema.set('toJSON', { virtuals: true });
+
+export const CatSchema = _CatSchema;
