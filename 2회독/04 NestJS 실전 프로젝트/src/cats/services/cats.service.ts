@@ -1,15 +1,22 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrpy from 'bcrypt';
-import { Model } from 'mongoose';
 import { CatRequestDto } from 'src/dto/cats.request.dto';
-import { CatsRepository } from './cats.repository';
-import { Cat } from './cats.schema';
+import { CatsRepository } from '../cats.repository';
+import { Cat } from '../cats.schema';
 
 @Injectable()
 export class CatsService {
   // 스키마를 서비스에서 사용하기 위해 DI를 해준다.
   constructor(private readonly catsRepository: CatsRepository) {}
+
+  async uploadImg(cat: Cat, files: Express.Multer.File[]) {
+    const fileName = `cats/${files[0].filename}`;
+    const newCat = await this.catsRepository.findByIdAndUpdateImg(
+      cat.id,
+      fileName,
+    );
+    return newCat;
+  }
 
   async signUp(body: CatRequestDto) {
     const { email, name, password } = body;
