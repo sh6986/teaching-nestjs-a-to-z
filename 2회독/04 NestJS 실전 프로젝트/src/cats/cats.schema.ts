@@ -5,6 +5,7 @@ import { Document } from 'mongoose';
 
 const options: SchemaOptions = {
   // createAt, updateAt을 자동으로 적용해준다.
+  // collation: 'cats', // 컬렉션 이름도 정해줄 수 있는데, 생략하면 클래스이름을 대문자 -> 소문자 변경 후 복수형으로 변경해서 자동으로 만들어준다.
   timestamps: true,
 };
 
